@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alva – Enkät för föräldrar</title>
+  <style>
+    :root { --alva-purple: #8b6fa8; --alva-purple-light: #c4afd9; --alva-purple-dark: #6b4f8a; --alva-cream: #faf8f5; --alva-charcoal: #2d2d2d; --alva-muted: #6b6b6b; --alva-border: #e8e0f0; --alva-card: #ffffff; --alva-selected: #f0ebf8; --alva-sage: #9aaa8a; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Georgia, serif; background: var(--alva-cream); color: var(--alva-charcoal); min-height: 100vh; }
+    header { background: white; border-bottom: 1px solid var(--alva-border); padding: 1.2rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .logo-text { font-size: 1.6rem; font-weight: bold; color: var(--alva-purple-dark); font-family: sans-serif; }
+    .header-badge { font-family: sans-serif; font-size: 0.75rem; color: var(--alva-purple); background: var(--alva-selected); border: 1px solid var(--alva-purple-light); border-radius: 999px; padding: 0.3rem 0.8rem; }
+    .hero { background: linear-gradient(135deg, #f5f0fa 0%, #ede8f5 100%); border-bottom: 1px solid var(--alva-border); padding: 3rem 2rem 2.5rem; text-align: center; }
+    .hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); color: var(--alva-purple-dark); line-height: 1.3; margin-bottom: 1rem; font-weight: normal; }
+    .hero p { font-family: sans-serif; color: var(--alva-muted); font-size: 1rem; max-width: 600px; margin: 0 auto 0.8rem; line-height: 1.7; }
+    .hero-quote { font-style: italic; color: var(--alva-purple); font-size: 1.05rem; margin: 1rem auto; max-width: 500px; }
+    .hero-badges { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 1.2rem; }
+    .hero-badge { font-family: sans-serif; font-size: 0.78rem; background: white; border: 1px solid var(--alva-purple-light); color: var(--alva-purple-dark); border-radius: 999px; padding: 0.35rem 0.9rem; }
+    main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .section { margin-bottom: 2.5rem; }
+    .section-header { background: linear-gradient(90deg, var(--alva-purple) 0%, var(--alva-purple-light) 100%); color: white; border-radius: 12px 12px 0 0; padding: 1rem 1.5rem; }
+    .section-header h2 { font-size: 1.05rem; font-weight: normal; }
+    .section-header p { font-family: sans-serif; font-size: 0.82rem; opacity: 0.85; margin-top: 0.2rem; }
+    .section-note { background: #f5f0fa; border-left: 3px solid var(--alva-purple-light); padding: 0.8rem 1.2rem; font-family: sans-serif; font-size: 0.85rem; color: var(--alva-muted); line-height: 1.6; }
+    .question-card { background: var(--alva-card); border: 1px solid var(--alva-border); border-top: none; padding: 1.4rem 1.5rem; }
+    .question-card:last-child { border-radius: 0 0 12px 12px; }
+    .question-card + .question-card { border-top: 1px solid var(--alva-border); }
+    .question-label { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.9rem; }
+    .question-number { font-family: sans-serif; font-size: 0.7rem; font-weight: bold; color: white; background: var(--alva-purple); border-radius: 999px; min-width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .question-number.env { background: var(--alva-sage); }
+    .question-text { font-size: 0.97rem; line-height: 1.5; }
+    .question-sub { font-family: sans-serif; font-size: 0.78rem; color: var(--alva-muted); margin-top: 0.2rem; }
+    .env-tag { font-family: sans-serif; font-size: 0.68rem; background: #e8f0e0; color: #5a7a4a; border-radius: 999px; padding: 0.15rem 0.5rem; margin-left: 0.4rem; vertical-align: middle; }
+    .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .option { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 0.9rem; border: 1px solid var(--alva-border); border-radius: 8px; cursor: pointer; transition: all 0.15s; font-family: sans-serif; font-size: 0.88rem; background: white; user-select: none; }
+    .option:hover { background: var(--alva-selected); border-color: var(--alva-purple-light); }
+    .option.selected { background: var(--alva-selected); border-color: var(--alva-purple); }
+    .option input { display: none; }
+    .option-dot { width: 18px; height: 18px; border: 2px solid var(--alva-purple-light); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .option.selected .option-dot { background: var(--alva-purple); border-color: var(--alva-purple); }
+    .option.selected .option-dot::after { content: ''; width: 7px; height: 7px; background: white; border-radius: 50%; }
+    .option-square { width: 18px; height: 18px; border: 2px solid var(--alva-purple-light); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .option.selected .option-square { background: var(--alva-purple); border-color: var(--alva-purple); }
+    .option.selected .option-square::after { content: '✓'; font-size: 11px; color: white; }
+    .scale-wrapper { margin-top: 0.4rem; }
+    .scale-label { font-family: sans-serif; font-size: 0.78rem; color: var(--alva-muted); margin-bottom: 0.5rem; }
+    .scale-buttons { display: flex; gap: 0.5rem; }
+    .scale-btn { flex: 1; aspect-ratio: 1; max-width: 56px; border: 2px solid var(--alva-border); border-radius: 8px; background: white; cursor: pointer; font-family: sans-serif; font-size: 1rem; transition: all 0.15s; }
+    .scale-btn:hover { border-color: var(--alva-purple-light); background: var(--alva-selected); }
+    .scale-btn.selected { background: var(--alva-purple); border-color: var(--alva-purple); color: white; }
+    .scale-ends { display: flex; justify-content: space-between; font-family: sans-serif; font-size: 0.73rem; color: var(--alva-muted); margin-top: 0.4rem; }
+    textarea { width: 100%; border: 1px solid var(--alva-border); border-radius: 8px; padding: 0.8rem; font-family: sans-serif; font-size: 0.88rem; resize: vertical; min-height: 90px; background: white; }
+    textarea:focus { outline: none; border-color: var(--alva-purple); }
+    .submit-area { text-align: center; margin-top: 2rem; }
+    .submit-btn { background: var(--alva-purple); color: white; border: none; border-radius: 999px; padding: 1rem 2.5rem; font-family: sans-serif; font-size: 1rem; cursor: pointer; transition: background 0.15s; }
+    .submit-btn:hover { background: var(--alva-purple-dark); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .error-msg { display: none; font-family: sans-serif; font-size: 0.82rem; color: #c0392b; margin-top: 0.7rem; }
+    #thank-you { display: none; text-align: center; padding: 4rem 2rem; }
+    #thank-you h2 { color: var(--alva-purple-dark); font-size: 1.8rem; margin-bottom: 1rem; font-weight: normal; }
+    #thank-you p { font-family: sans-serif; color: var(--alva-muted); max-width: 520px; margin: 0 auto 1rem; line-height: 1.7; }
+    footer { text-align: center; padding: 1.5rem; font-family: sans-serif; font-size: 0.75rem; color: var(--alva-muted); border-top: 1px solid var(--alva-border); }
+  </style>
+</head>
+<body>
+<header>
+  <span class="logo-text">Alva</span>
+  <span class="header-badge">⭐ Tidig användarstudie</span>
+</header>
+<div class="hero">
+  <h1>Du gör något viktigt just nu.</h1>
+  <p>Den här enkäten tar under 5 minuter och är helt anonym.</p>
+  <p>Dina svar hjälper oss att bygga Alva – ett gratis verktyg för föräldrar som navigerar skolan, BUP och socialtjänsten.</p>
+  <p class="hero-quote">"Du ska inte behöva bli expert för att ditt barn ska få hjälp."</p>
+  <div class="hero-badges"><span class="hero-badge">⏱ Under 5 minuter</span><span class="hero-badge">🔒 100% anonymt</span><span class="hero-badge">💜 Gratis</span></div>
+</div>
+<main><form id="alva-form">
+  <div class="section"><div class="section-header"><h2>Del 1 – Om dig</h2><p>Bakgrundsinformation.</p></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">1</span><span class="question-text">Hur länge har du navigerat systemet?</span></div>
+  <div class="options" data-name="q1" data-type="radio">
+    <label class="option"><input type="radio" name="q1" value="under1"><span class="option-dot"></span>Under 1 år</label>
+    <label class="option"><input type="radio" name="q1" value="1-3"><span class="option-dot"></span>1–3 år</label>
+    <label class="option"><input type="radio" name="q1" value="3-5"><span class="option-dot"></span>3–5 år</label>
+    <label class="option"><input type="radio" name="q1" value="mer5"><span class="option-dot"></span>Mer än 5 år</label>
+  </div></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">2</span><div><div class="question-text">Vilka system har du haft kontakt med?</div><div class="question-sub">Flera val möjliga.</div></div></div>
+  <div class="options" data-name="q2" data-type="checkbox">
+    <label class="option"><input type="checkbox" name="q2" value="skola"><span class="option-square"></span>Skolan / elevhälsa</label>
+    <label class="option"><input type="checkbox" name="q2" value="bup"><span class="option-square"></span>BUP</label>
+    <label class="option"><input type="checkbox" name="q2" value="soc"><span class="option-square"></span>Socialtjänsten</label>
+    <label class="option"><input type="checkbox" name="q2" value="hab"><span class="option-square"></span>Habiliteringen</label>
+    <label class="option"><input type="checkbox" name="q2" value="fk"><span class="option-square"></span>Försäkringskassan</label>
+  </div></div></div>
+  <div class="section"><div class="section-header"><h2>Del 2 – Skolan</h2><p>Om miljön – inte barnet.</p></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">3</span><span class="question-text">Har skolan krävt diagnos för anpassningar?</span></div>
+  <div class="options" data-name="q3" data-type="radio">
+    <label class="option"><input type="radio" name="q3" value="ja-diagnos"><span class="option-dot"></span>Ja</label>
+    <label class="option"><input type="radio" name="q3" value="nej-stod"><span class="option-dot"></span>Nej</label>
+    <label class="option"><input type="radio" name="q3" value="varierat"><span class="option-dot"></span>Varierat</label>
+  </div></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">4</span><span class="question-text">Problem med skolnärvaro?</span></div>
+  <div class="options" data-name="q4" data-type="checkbox">
+    <label class="option"><input type="checkbox" name="q4" value="hemmasittare"><span class="option-square"></span>Hemmasittare</label>
+    <label class="option"><input type="checkbox" name="q4" value="delvis"><span class="option-square"></span>Delvis närvaro</label>
+    <label class="option"><input type="checkbox" name="q4" value="periodvis"><span class="option-square"></span>Periodvis frånvaro</label>
+    <label class="option"><input type="checkbox" name="q4" value="inga"><span class="option-square"></span>Inga problem</label>
+  </div></div></div>
+  <div class="section"><div class="section-header"><h2>Del 3 – BUP</h2><p>Väntetider.</p></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">5</span><span class="question-text">Hur länge väntade du på BUP?</span></div>
+  <div class="options" data-name="q5" data-type="radio">
+    <label class="option"><input type="radio" name="q5" value="ej-kontakt"><span class="option-dot"></span>Inte i kontakt med BUP</label>
+    <label class="option"><input type="radio" name="q5" value="under3"><span class="option-dot"></span>Under 3 månader</label>
+    <label class="option"><input type="radio" name="q5" value="3-6"><span class="option-dot"></span>3–6 månader</label>
+    <label class="option"><input type="radio" name="q5" value="6-12"><span class="option-dot"></span>6–12 månader</label>
+    <label class="option"><input type="radio" name="q5" value="mer12"><span class="option-dot"></span>Mer än 12 månader</label>
+  </div></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">7</span><span class="question-text">Hur frustrerande är klyftan skola/BUP?</span></div>
+  <div class="scale-wrapper"><div class="scale-label">1 = inte alls &middot; 5 = extremt</div>
+  <div class="scale-buttons" data-name="q7"><button type="button" class="scale-btn" data-value="1">1</button><button type="button" class="scale-btn" data-value="2">2</button><button type="button" class="scale-btn" data-value="3">3</button><button type="button" class="scale-btn" data-value="4">4</button><button type="button" class="scale-btn" data-value="5">5</button></div>
+  <div class="scale-ends"><span>Inte alls</span><span>Extremt</span></div></div></div></div>
+  <div class="section"><div class="section-header"><h2>Del 4 – Socialtjänsten</h2><p>Svara på det du känner dig bekväm med.</p></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">8</span><span class="question-text">Har skolan gjort en orosanmälan?</span></div>
+  <div class="options" data-name="q8" data-type="radio">
+    <label class="option"><input type="radio" name="q8" value="ja"><span class="option-dot"></span>Ja</label>
+    <label class="option"><input type="radio" name="q8" value="nej"><span class="option-dot"></span>Nej</label>
+    <label class="option"><input type="radio" name="q8" value="osaker"><span class="option-dot"></span>Osäker</label>
+  </div></div></div>
+  <div class="section"><div class="section-header"><h2>Del 5 – Vardag</h2><p>Samordning.</p></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">13</span><span class="question-text">Hur utmattande är rollen som brygga?</span></div>
+  <div class="scale-wrapper"><div class="scale-label">1 = inte alls &middot; 5 = helt utmattande</div>
+  <div class="scale-buttons" data-name="q13"><button type="button" class="scale-btn" data-value="1">1</button><button type="button" class="scale-btn" data-value="2">2</button><button type="button" class="scale-btn" data-value="3">3</button><button type="button" class="scale-btn" data-value="4">4</button><button type="button" class="scale-btn" data-value="5">5</button></div>
+  <div class="scale-ends"><span>Inte alls</span><span>Helt utmattande</span></div></div></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">14</span><span class="question-text">Vad är svårast i din vardag?</span></div>
+  <textarea name="q14" placeholder="Skriv fritt..."></textarea></div></div>
+  <div class="section"><div class="section-header"><h2>Del 6 – Alva</h2><p>Prioriteringar.</p></div>
+  <div class="question-card"><div class="question-label"><span class="question-number">15</span><span class="question-text">Om Alva kunde göra <em>en</em> sak – vad?</span></div>
+  <div class="options" data-name="q15" data-type="radio">
+    <label class="option"><input type="radio" name="q15" value="brev"><span class="option-dot"></span>Skriva brev till myndigheter</label>
+    <label class="option"><input type="radio" name="q15" value="rattigheter"><span class="option-dot"></span>Förklara rättigheter</label>
+    <label class="option"><input type="radio" name="q15" value="dokument"><span class="option-dot"></span>Hålla ordning på dokument</label>
+    <label class="option"><input type="radio" name="q15" value="tidslinje"><span class="option-dot"></span>Tidslinje och nästa steg</label>
+    <label class="option"><input type="radio" name="q15" value="foraldrar"><span class="option-dot"></span>Koppla ihop med andra föräldrar</label>
+  </div></div>
+  <div class="question-card" style="border-radius:0 0 12px 12px"><div class="question-label"><span class="question-number">16</span><span class="question-text">Är det något mer du vill att vi vet?</span></div>
+  <textarea name="q16" placeholder="Skriv fritt..."></textarea></div></div>
+  <div class="submit-area"><button type="submit" class="submit-btn" id="submit-btn">Skicka mina svar</button><p class="error-msg" id="error-msg">Något gick fel.</p></div>
+</form>
+<div id="thank-you"><h2>Tack. Det här betyder mer än du vet.</h2><p>Du gör ett fantastiskt jobb under enorm systemisk press.</p><p><strong>Alva bygger vi – <em>för dig</em>.</strong></p></div>
+</main>
+<footer>Texterna är vägledning – inte juridisk rådgivning. &copy; Alva</footer>
+<script>
+const SUPABASE_URL='https://qkuqxlypmsfwaxwpcjgj.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrdXF4bHlwbXNmd2F4d3BjamdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NTcwMDEsImV4cCI6MjA5NDUzMzAwMX0.oIvE0b4doA0zR6nAYpwwyRh5jpd6zNXo3SOytD58a94';
+document.querySelectorAll('.options').forEach(g=>{const t=g.dataset.type;g.querySelectorAll('.option').forEach(o=>{o.addEventListener('click',()=>{if(t==='radio'){g.querySelectorAll('.option').forEach(x=>x.classList.remove('selected'));o.classList.add('selected');o.querySelector('input').checked=true;}else{o.classList.toggle('selected');o.querySelector('input').checked=o.classList.contains('selected');}});});});
+document.querySelectorAll('.scale-buttons').forEach(g=>{g.querySelectorAll('.scale-btn').forEach(b=>{b.addEventListener('click',()=>{g.querySelectorAll('.scale-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');g.dataset.selected=b.dataset.value;});});});
+document.getElementById('alva-form').addEventListener('submit',async(e)=>{e.preventDefault();const f=e.target;const btn=document.getElementById('submit-btn');btn.disabled=true;btn.textContent='Skickar...';const d={};new FormData(f).forEach((v,k)=>{if(d[k]){d[k]=Array.isArray(d[k])?[...d[k],v]:[d[k],v];}else{d[k]=v;}});document.querySelectorAll('.scale-buttons').forEach(g=>{if(g.dataset.selected)d[g.dataset.name]=g.dataset.selected;});Object.keys(d).forEach(k=>{if(Array.isArray(d[k]))d[k]=d[k].join(', ');});try{const r=await fetch(SUPABASE_URL+'/rest/v1/enkatsvar',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=minimal'},body:JSON.stringify(d)});if(r.ok||r.status===201){f.style.display='none';document.getElementById('thank-you').style.display='block';window.scrollTo({top:0,behavior:'smooth'});}else{document.getElementById('error-msg').style.display='block';btn.disabled=false;btn.textContent='Skicka mina svar';}}catch(err){document.getElementById('error-msg').style.display='block';btn.disabled=false;btn.textContent='Skicka mina svar';}});
+</script>
+</body>
+</html>
