@@ -813,21 +813,21 @@
 </footer>
 
 <script>
-  // Option selection
-  document.querySelectorAll('.options').forEach(group => {
+  // Option selection - event delegation on document
+  document.addEventListener('click', function(e) {
+    const opt = e.target.closest('.option');
+    if (!opt) return;
+    const group = opt.closest('.options');
+    if (!group) return;
     const type = group.dataset.type;
-    group.querySelectorAll('.option').forEach(opt => {
-      opt.addEventListener('click', () => {
-        if (type === 'radio') {
-          group.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-          opt.classList.add('selected');
-          opt.querySelector('input').checked = true;
-        } else {
-          opt.classList.toggle('selected');
-          opt.querySelector('input').checked = opt.classList.contains('selected');
-        }
-      });
-    });
+    if (type === 'radio') {
+      group.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      opt.querySelector('input').checked = true;
+    } else {
+      opt.classList.toggle('selected');
+      opt.querySelector('input').checked = opt.classList.contains('selected');
+    }
   });
 
   // Scale buttons
