@@ -817,6 +817,7 @@
   document.addEventListener('click', function(e) {
     const opt = e.target.closest('.option');
     if (!opt) return;
+    e.preventDefault();
     const group = opt.closest('.options');
     if (!group) return;
     const type = group.dataset.type;
@@ -825,8 +826,9 @@
       opt.classList.add('selected');
       opt.querySelector('input').checked = true;
     } else {
+      const isSelected = opt.classList.contains('selected');
       opt.classList.toggle('selected');
-      opt.querySelector('input').checked = opt.classList.contains('selected');
+      opt.querySelector('input').checked = !isSelected;
     }
   });
 
